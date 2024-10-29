@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Machine Learning con tytus.js</title>
+</head>
+<body>
+    <h1>Práctica de Machine Learning con tytus.js</h1>
+    
+    <!-- Seleccionador de archivo CSV -->
+    <label for="csvFile">Seleccionar archivo CSV:</label>
+    <input type="file" id="csvFile" accept=".csv">
+    <br><br>
+
+    <!-- Seleccionador de algoritmos de Machine Learning -->
+    <label for="algorithmSelect">Seleccionar modelo de ML:</label>
+    <select id="algorithmSelect">
+        <option value="linear_regression">Regresión Lineal</option>
+        <option value="logistic_regression">Regresión Logística</option>
+        <option value="decision_tree">Árbol de Decisión</option>
+    </select>
+    <br><br>
+
+    <!-- Parámetros del modelo -->
+    <label for="trainTestSplit">Porcentaje de Train/Test Split:</label>
+    <input type="number" id="trainTestSplit" placeholder="70" min="0" max="100">
+    <br><br>
+
+    <label for="objective">Objetivo del entrenamiento:</label>
+    <select id="objective">
+        <option value="trend">Tendencias</option>
+        <option value="pattern">Patrones</option>
+        <option value="classification">Clasificación</option>
+        <option value="prediction">Predicción</option>
+    </select>
+    <br><br>
+
+    <!-- Parámetros adicionales según el modelo seleccionado -->
+    <label for="xRange">Rango de predicción en eje X:</label>
+    <input type="text" id="xRange" placeholder="Ej: 1-100">
+    <br><br>
+
+    <label for="numClasses">Número de clases (para clasificación):</label>
+    <input type="number" id="numClasses" placeholder="Ej: 3">
+    <br><br>
+
+    <!-- Selección de variables de entrada y salida para aprendizaje supervisado -->
+    <label for="inputVariables">Variables de entrada:</label>
+    <input type="text" id="inputVariables" placeholder="Ej: edad, ingresos">
+    <br><br>
+
+    <label for="outputVariable">Variable de salida:</label>
+    <input type="text" id="outputVariable" placeholder="Ej: precio">
+    <br><br>
+
+    <!-- Botones de operación -->
+    <button id="trainButton">Entrenar</button>
+    <button id="predictButton">Predecir</button>
+    <button id="showGraphButton">Mostrar Gráficas</button>
+
+    <!-- Incluir la biblioteca tytus.js -->
+    <script src="tytus.js"></script> <!-- Asegúrate de que tytus.js esté en el mismo directorio -->
+    <script src="script.js"></script>
+</body>
+</html>
