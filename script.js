@@ -1,24 +1,28 @@
 let csvData = null;
 
-// Función para cargar y leer el archivo CSV
+// Cargar Google Charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(initialize);
+
+// Inicializar evento para leer el archivo CSV
 document.getElementById("csvFile").addEventListener("change", function(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = function(e) {
         const contents = e.target.result;
-        csvData = parseCSV(contents); // función de análisis CSV (definida más adelante)
+        csvData = parseCSV(contents);
         console.log("Datos CSV cargados:", csvData);
     };
     reader.readAsText(file);
 });
 
-// Función para parsear el contenido del CSV
+// Parsear el archivo CSV
 function parseCSV(contents) {
     const rows = contents.trim().split("\n");
-    return rows.map(row => row.split(","));
+    return rows.map(row => row.split(",").map(Number));
 }
 
-// Lógica para entrenar el modelo
+// Entrenar el modelo
 document.getElementById("trainButton").addEventListener("click", function() {
     if (!csvData) {
         alert("Por favor, cargue un archivo CSV primero.");
@@ -27,38 +31,32 @@ document.getElementById("trainButton").addEventListener("click", function() {
 
     const trainTestSplit = document.getElementById("trainTestSplit").value / 100;
     const modelType = document.getElementById("algorithmSelect").value;
-    const inputVariables = document.getElementById("inputVariables").value.split(","); // Variables de entrada
-    const outputVariable = document.getElementById("outputVariable").value; // Variable de salida
 
-    // Crear instancia del modelo usando tytus.js
-    const model = new TytusML.Model({
-        type: modelType,
-        split: trainTestSplit,
-        inputs: inputVariables,
-        output: outputVariable
-    });
+    const linear = new LinearRegression();
+    linear.fit(csvData.map(row => row[0]), csvData.map(row => row[1]));
+    const yPredict = linear.predict(csvData.map(row => row[0]));
 
-    model.train(csvData, function(result) {
-        console.log("Entrenamiento completado:", result);
-        alert("Entrenamiento completado.");
-    });
+    console.log("Y Predicted:", yPredict);
+    drawChart(csvData.map(row => row[0]), csvData.map(row => row[1]), yPredict);
 });
 
-// Lógica para realizar predicciones
-document.getElementById("predictButton").addEventListener("click", function() {
-    if (!csvData) {
-        alert("Por favor, cargue un archivo CSV primero.");
-        return;
+// Dibujar gráfico con datos reales y predicción
+function drawChart(xTrain, yTrain, yPredict) {
+    const dataArray = [['X', 'Y Real', 'Y Predicción']];
+    for (let i = 0; i < xTrain.length; i++) {
+        dataArray.push([xTrain[i], yTrain[i], yPredict[i]]);
     }
 
-    const xRange = document.getElementById("xRange").value.split("-").map(Number);
-    const prediction = model.predict(xRange);
-    console.log("Predicción:", prediction);
-    alert("Predicción realizada.");
-});
+    const data = google.visualization.arrayToDataTable(dataArray);
 
-// Lógica para mostrar las gráficas
-document.getElementById("showGraphButton").addEventListener("click", function() {
-    // Lógica para mostrar gráficas (puedes usar cualquier librería de JavaScript)
-    console.log("Mostrando gráficas...");
-});
+    const options = {
+        title: 'Regresión Lineal',
+        seriesType: 'scatter',
+        series: {1: {type: 'line'}},
+        hAxis: { title: 'X' },
+        vAxis: { title: 'Y' }
+    };
+
+    const chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+}
