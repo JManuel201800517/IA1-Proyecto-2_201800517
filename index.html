@@ -3,71 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica de Machine Learning con tytus.js</title>
+    <title>Regresión Lineal desde CSV</title>
     <script type="text/javascript" src="tytus.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-    <h1>Práctica de Machine Learning con tytus.js</h1>
+    <h2>Regresión Lineal desde CSV</h2>
+    <p id="log"></p>
     
-    <!-- Seleccionador de archivo CSV -->
-    <label for="csvFile">Seleccionar archivo CSV:</label>
-    <input type="file" id="csvFile" accept=".csv">
-    <br><br>
-
-    <!-- Seleccionador de algoritmos de Machine Learning -->
-    <label for="algorithmSelect">Seleccionar modelo de ML:</label>
-    <select id="algorithmSelect">
-        <option value="linear_regression">Regresión Lineal</option>
-        <option value="logistic_regression">Regresión Logística</option>
-        <option value="decision_tree">Árbol de Decisión</option>
-    </select>
-    <br><br>
-
-    <!-- Parámetros del modelo -->
-    <label for="trainTestSplit">Porcentaje de Train/Test Split:</label>
-    <input type="number" id="trainTestSplit" placeholder="70" min="0" max="100">
-    <br><br>
-
-    <label for="objective">Objetivo del entrenamiento:</label>
-    <select id="objective">
-        <option value="trend">Tendencias</option>
-        <option value="pattern">Patrones</option>
-        <option value="classification">Clasificación</option>
-        <option value="prediction">Predicción</option>
-    </select>
-    <br><br>
-
-    <!-- Parámetros adicionales según el modelo seleccionado -->
-    <label for="xRange">Rango de predicción en eje X:</label>
-    <input type="text" id="xRange" placeholder="Ej: 1-100">
-    <br><br>
-
-    <label for="numClasses">Número de clases (para clasificación):</label>
-    <input type="number" id="numClasses" placeholder="Ej: 3">
-    <br><br>
-
-    <!-- Selección de variables de entrada y salida para aprendizaje supervisado -->
-    <label for="inputVariables">Variables de entrada:</label>
-    <input type="text" id="inputVariables" placeholder="Ej: edad, ingresos">
-    <br><br>
-
-    <label for="outputVariable">Variable de salida:</label>
-    <input type="text" id="outputVariable" placeholder="Ej: precio">
-    <br><br>
-
-    <!-- Botones de operación -->
-    <button id="trainButton">Entrenar</button>
-    <button id="predictButton">Predecir</button>
-    <button id="showGraphButton">Mostrar Gráficas</button>
-    <br><br>
-
-    <!-- Gráfica de resultados -->
+    <input type="file" id="fileInput" accept=".csv" />
+    <button onclick="loadCSV()">Cargar CSV</button>
+    
     <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    
+    <script type="text/javascript">
+        function loadCSV() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
 
-    <!-- Incluir la biblioteca tytus.js y script.js -->
-    <!--script src="tytus.js"></script-->
-    <script src="script.js"></script>
+            if (!file) {
+                alert('Por favor, selecciona un archivo CSV.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const csvData = event.target.result;
+                processCSV(csvData);
+            };
+            reader.readAsText(file);
+        }
+
+        function processCSV(data) {
+            const lines = data.split('\n');
+            const xTrain = [];
+            const yTrain = [];
+
+            // Asumiendo que el CSV tiene encabezado: X,Y
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].split(',');
+                if (line.length === 2) { // Asegúrate de que hay 2 columnas
+                    xTrain.push(parseFloat(line[0]));
+                    yTrain.push(parseFloat(line[1]));
+                }
+            }
+
+            // Crear y ajustar el modelo de regresión lineal
+            var linear = new LinearRegression();
+            linear.fit(xTrain, yTrain);
+            const yPredict = linear.predict(xTrain);
+
+            document.getElementById("log").innerHTML += '<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain + '<br>Y Predict: ' + yPredict;
+            const a = joinArrays('x', xTrain, 'yTrain', yTrain, 'yPredict', yPredict);
+
+            google.charts.load('current', {'packages': ['corechart']});
+            google.charts.setOnLoadCallback(() => drawChart(a));
+        }
+
+        function drawChart(dataArray) {
+            var data = google.visualization.arrayToDataTable(dataArray);
+            var options = {
+                seriesType: 'scatter',
+                series: {1: {type: 'line'}}
+            };
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
 </body>
 </html>
-
