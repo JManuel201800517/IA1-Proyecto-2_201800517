@@ -66,6 +66,7 @@
         }
 
         function trainModel() {
+            document.getElementById("log").innerHTML = "";
             const model = document.getElementById('modelSelect').value;
 
             if (model === 'regresionLineal') {
