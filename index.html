@@ -15,6 +15,12 @@
     <select id="modelSelect">
         <option value="seleccionar">Seleccionar</option>
         <option value="regresionLineal">Regresión Lineal</option>
+        <option value="regresionLogistica">Regresión Logistica</option>
+        <option value="arbolDecision">Regresión Polinomial</option>
+        <option value="NaiveBayes">Naive Bayes</option>
+        <option value="redesNeuronales">Redes Neuronales</option>
+        <option value="kmeans">K-means</option>
+        <option value="kneighbor">K-nearest Neighbor</option>
         <!-- Puedes agregar más opciones aquí en el futuro -->
     </select>
     
@@ -62,7 +68,7 @@
                     yTrain.push(parseFloat(line[1]));
                 }
             }
-            document.getElementById("log").innerHTML += 'Datos cargados exitosamente. Listos para entrenamiento.';
+            document.getElementById("log").innerHTML += '<br>Datos cargados exitosamente.';
         }
 
         function trainModel() {
