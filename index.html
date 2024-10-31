@@ -3,20 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regresión Lineal desde CSV</title>
+    <title>Proyecto 2- Machine Learning - Inteligencia Artificial 1</title>
     <script type="text/javascript" src="tytus.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-    <h2>Regresión Lineal desde CSV</h2>
+    <h2>Modelos desde CSV</h2>
     <p id="log"></p>
+
+    <label for="modelSelect">Seleccione el modelo:</label>
+    <select id="modelSelect">
+        <option value="regresionLineal">Regresión Lineal</option>
+        <option value="regresionLogistica">Regresión Logistica</option>
+        <option value="arbolDecision">Arbol de Decision</option>
+        <!-- Puedes agregar más opciones aquí en el futuro -->
+    </select>
     
     <input type="file" id="fileInput" accept=".csv" />
-    <button onclick="loadCSV()">Cargar CSV</button>
-    
+    <button onclick="executeModel()">Ejecutar Modelo</button>
+
     <div id="chart_div" style="width: 900px; height: 500px;"></div>
-    
+
     <script type="text/javascript">
+        function executeModel() {
+            const model = document.getElementById('modelSelect').value;
+
+            if (model === 'regresionLineal') {
+                loadCSV(); // Solo ejecutará loadCSV si se selecciona "Regresión Lineal"
+            } else {
+                alert('Por favor, selecciona un modelo válido.');
+            }
+        }
+
         function loadCSV() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
@@ -53,7 +71,7 @@
             linear.fit(xTrain, yTrain);
             const yPredict = linear.predict(xTrain);
 
-            document.getElementById("log").innerHTML += '<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain + '<br>Y Predict: ' + yPredict;
+            document.getElementById("log").innerHTML = '<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain + '<br>Y Predict: ' + yPredict;
             const a = joinArrays('x', xTrain, 'yTrain', yTrain, 'yPredict', yPredict);
 
             google.charts.load('current', {'packages': ['corechart']});
