@@ -4,33 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto 2 - Machine Learning</title>
+    <link rel="stylesheet" href="styles.css">
     <script type="text/javascript" src="tytus.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-    <h2>Proyecto 2 - Machine Learning - Inteligencia Artificial 1</h2>
-    <p id="log"></p>
+    <div class="container">
+        <h2>Proyecto 2 - Machine Learning - Inteligencia Artificial 1</h2>
+        <p id="log"></p>
 
-    <label for="modelSelect">Seleccione el modelo:</label>
-    <select id="modelSelect">
-        <option value="seleccionar">Seleccionar</option>
-        <option value="regresionLineal">Regresión Lineal</option>
-        <option value="regresionLogistica">Regresión Logistica</option>
-        <option value="arbolDecision">Regresión Polinomial</option>
-        <option value="NaiveBayes">Naive Bayes</option>
-        <option value="redesNeuronales">Redes Neuronales</option>
-        <option value="kmeans">K-means</option>
-        <option value="kneighbor">K-nearest Neighbor</option>
-        <!-- Puedes agregar más opciones aquí en el futuro -->
-    </select>
-    
-    <input type="file" id="fileInput" accept=".csv" />
-    
-    <button onclick="trainModel()">Entrenamiento</button>
-    <button onclick="predictModel()">Predicción</button>
-    <button onclick="showGraph()">Mostrar Gráficas</button>
+        <label for="modelSelect">Seleccione el modelo:</label>
+        <select id="modelSelect">
+            <option value="seleccionar">Seleccionar</option>
+            <option value="regresionLineal">Regresión Lineal</option>
+            <option value="regresionLogistica">Regresión Logistica</option>
+            <option value="arbolDecision">Regresión Polinomial</option>
+            <option value="NaiveBayes">Naive Bayes</option>
+            <option value="redesNeuronales">Redes Neuronales</option>
+            <option value="kmeans">K-means</option>
+            <option value="kneighbor">K-nearest Neighbor</option>
+        </select>
+        
+        <input type="file" id="fileInput" accept=".csv" />
+        
+        <button onclick="trainModel()">Entrenamiento</button>
+        <button onclick="predictModel()">Predicción</button>
+        <button onclick="showGraph()">Mostrar Gráficas</button>
 
-    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+        <div id="chart_div"></div>
+    </div>
 
     <script type="text/javascript">
         let xTrain = [];
@@ -60,10 +62,9 @@
             xTrain = [];
             yTrain = [];
 
-            // Asumiendo que el CSV tiene encabezado: X,Y
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].split(',');
-                if (line.length === 2) { // Asegúrate de que hay 2 columnas
+                if (line.length === 2) { 
                     xTrain.push(parseFloat(line[0]));
                     yTrain.push(parseFloat(line[1]));
                 }
