@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto 2- Machine Learning - Inteligencia Artificial 1</title>
+    <title>Proyecto 2-Machine Learning</title>
     <script type="text/javascript" src="tytus.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-    <h2>Modelos desde CSV</h2>
+    <h2>Proyecto 2- Machine Learning - Inteligencia Artificial 1</h2>
     <p id="log"></p>
 
     <label for="modelSelect">Seleccione el modelo:</label>
     <select id="modelSelect">
+        <option value="seleccionar">Seleccionar</option>
         <option value="regresionLineal">Regresión Lineal</option>
         <option value="regresionLogistica">Regresión Logistica</option>
         <option value="arbolDecision">Arbol de Decision</option>
@@ -20,20 +21,18 @@
     </select>
     
     <input type="file" id="fileInput" accept=".csv" />
-    <button onclick="executeModel()">Ejecutar Modelo</button>
+    
+    <button onclick="trainModel()">Entrenamiento</button>
+    <button onclick="predictModel()">Predicción</button>
+    <button onclick="showGraph()">Mostrar Gráficas</button>
 
     <div id="chart_div" style="width: 900px; height: 500px;"></div>
 
     <script type="text/javascript">
-        function executeModel() {
-            const model = document.getElementById('modelSelect').value;
-
-            if (model === 'regresionLineal') {
-                loadCSV(); // Solo ejecutará loadCSV si se selecciona "Regresión Lineal"
-            } else {
-                alert('Por favor, selecciona un modelo válido.');
-            }
-        }
+        let xTrain = [];
+        let yTrain = [];
+        let yPredict = [];
+        let linear;
 
         function loadCSV() {
             const fileInput = document.getElementById('fileInput');
@@ -54,8 +53,8 @@
 
         function processCSV(data) {
             const lines = data.split('\n');
-            const xTrain = [];
-            const yTrain = [];
+            xTrain = [];
+            yTrain = [];
 
             // Asumiendo que el CSV tiene encabezado: X,Y
             for (let i = 1; i < lines.length; i++) {
@@ -65,17 +64,40 @@
                     yTrain.push(parseFloat(line[1]));
                 }
             }
+            document.getElementById("log").innerHTML = 'Datos cargados exitosamente. Listos para entrenamiento.';
+        }
 
-            // Crear y ajustar el modelo de regresión lineal
-            var linear = new LinearRegression();
-            linear.fit(xTrain, yTrain);
-            const yPredict = linear.predict(xTrain);
+        function trainModel() {
+            const model = document.getElementById('modelSelect').value;
 
-            document.getElementById("log").innerHTML = '<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain + '<br>Y Predict: ' + yPredict;
-            const a = joinArrays('x', xTrain, 'yTrain', yTrain, 'yPredict', yPredict);
+            if (model === 'regresionLineal') {
+                loadCSV();
+                linear = new LinearRegression();
+                linear.fit(xTrain, yTrain);
+                document.getElementById("log").innerHTML += '<br>Modelo de Regresión Lineal entrenado.';
+            } else {
+                alert('Por favor, selecciona un modelo válido para entrenar.');
+            }
+        }
 
-            google.charts.load('current', {'packages': ['corechart']});
-            google.charts.setOnLoadCallback(() => drawChart(a));
+        function predictModel() {
+            if (linear) {
+                yPredict = linear.predict(xTrain);
+                document.getElementById("log").innerHTML += '<br>Predicción realizada. Puedes mostrar la gráfica.';
+            } else {
+                alert('Primero entrena el modelo antes de predecir.');
+            }
+        }
+
+        function showGraph() {
+            if (yPredict.length > 0) {
+                const dataArray = joinArrays('x', xTrain, 'yTrain', yTrain, 'yPredict', yPredict);
+
+                google.charts.load('current', {'packages': ['corechart']});
+                google.charts.setOnLoadCallback(() => drawChart(dataArray));
+            } else {
+                alert('Primero realiza una predicción para mostrar la gráfica.');
+            }
         }
 
         function drawChart(dataArray) {
@@ -90,3 +112,4 @@
     </script>
 </body>
 </html>
+
