@@ -30,6 +30,8 @@
         <button onclick="trainModel()">Entrenamiento</button>
         <button onclick="predictModel()">Predicción</button>
         <button onclick="showGraph()">Mostrar Gráficas</button>
+        <button onclick="showTrend()">Tendencia</button>
+        <button onclick="showPatterns()">Patrones</button>
 
         <div id="chart_div"></div>
     </div>
@@ -106,13 +108,50 @@
             }
         }
 
-        function drawChart(dataArray) {
-            var data = google.visualization.arrayToDataTable(dataArray);
-            var options = {
-                seriesType: 'scatter',
-                series: {1: {type: 'line'}}
+        function showTrend() {
+            if (xTrain.length > 1 && yTrain.length > 1) {
+                const trendData = [];
+                for (let i = 0; i < xTrain.length; i++) {
+                    trendData.push([xTrain[i], yTrain[i]]);
+                }
+                
+                google.charts.load('current', {'packages': ['corechart']});
+                google.charts.setOnLoadCallback(() => drawTrendChart(trendData));
+            } else {
+                alert('Primero carga y entrena un modelo con datos suficientes.');
+            }
+        }
+
+        function showPatterns() {
+            if (xTrain.length > 1 && yTrain.length > 1) {
+                const avgData = xTrain.map((x, index) => [x, yTrain[index]]);
+                google.charts.load('current', {'packages': ['corechart']});
+                google.charts.setOnLoadCallback(() => drawPatternChart(avgData));
+            } else {
+                alert('Primero carga y entrena un modelo con datos suficientes.');
+            }
+        }
+
+        function drawTrendChart(dataArray) {
+            const data = google.visualization.arrayToDataTable([['X', 'Y'], ...dataArray]);
+            const options = {
+                title: 'Tendencia de los datos',
+                trendlines: { 0: {} },
+                legend: { position: 'bottom' }
             };
-            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            const chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+        function drawPatternChart(dataArray) {
+            const data = google.visualization.arrayToDataTable([['X', 'Y'], ...dataArray]);
+            const options = {
+                title: 'Patrones en los datos',
+                hAxis: { title: 'X' },
+                vAxis: { title: 'Y' },
+                legend: 'none'
+            };
+            const chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
     </script>
