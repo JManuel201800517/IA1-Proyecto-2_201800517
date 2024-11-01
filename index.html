@@ -117,6 +117,8 @@
                 
                 google.charts.load('current', {'packages': ['corechart']});
                 google.charts.setOnLoadCallback(() => drawTrendChart(trendData));
+
+                document.getElementById("log").innerHTML += '<br>Gráfica de tendencia mostrada para los datos cargados.';
             } else {
                 alert('Primero carga y entrena un modelo con datos suficientes.');
             }
@@ -127,6 +129,8 @@
                 const avgData = xTrain.map((x, index) => [x, yTrain[index]]);
                 google.charts.load('current', {'packages': ['corechart']});
                 google.charts.setOnLoadCallback(() => drawPatternChart(avgData));
+
+                document.getElementById("log").innerHTML += '<br>Gráfica de patrones generada a partir de los datos cargados.';
             } else {
                 alert('Primero carga y entrena un modelo con datos suficientes.');
             }
