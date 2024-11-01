@@ -115,10 +115,14 @@
                     trendData.push([xTrain[i], yTrain[i]]);
                 }
                 
+                // Calcular dirección de tendencia
+                const slope = (yTrain[yTrain.length - 1] - yTrain[0]) / (xTrain[xTrain.length - 1] - xTrain[0]);
+                const trendText = slope > 0 ? "La tendencia es ascendente." : "La tendencia es descendente.";
+
+                document.getElementById("log").innerHTML += `<br>${trendText}`;
+                
                 google.charts.load('current', {'packages': ['corechart']});
                 google.charts.setOnLoadCallback(() => drawTrendChart(trendData));
-
-                document.getElementById("log").innerHTML += '<br>Gráfica de tendencia mostrada para los datos cargados.';
             } else {
                 alert('Primero carga y entrena un modelo con datos suficientes.');
             }
@@ -127,10 +131,19 @@
         function showPatterns() {
             if (xTrain.length > 1 && yTrain.length > 1) {
                 const avgData = xTrain.map((x, index) => [x, yTrain[index]]);
+                
+                // Análisis de patrones: detectar picos y valles
+                let peaks = 0, valleys = 0;
+                for (let i = 1; i < yTrain.length - 1; i++) {
+                    if (yTrain[i] > yTrain[i - 1] && yTrain[i] > yTrain[i + 1]) peaks++;
+                    if (yTrain[i] < yTrain[i - 1] && yTrain[i] < yTrain[i + 1]) valleys++;
+                }
+
+                const patternText = `Patrones detectados: ${peaks} picos y ${valleys} valles en los datos.`;
+                document.getElementById("log").innerHTML += `<br>${patternText}`;
+                
                 google.charts.load('current', {'packages': ['corechart']});
                 google.charts.setOnLoadCallback(() => drawPatternChart(avgData));
-
-                document.getElementById("log").innerHTML += '<br>Gráfica de patrones generada a partir de los datos cargados.';
             } else {
                 alert('Primero carga y entrena un modelo con datos suficientes.');
             }
@@ -171,4 +184,5 @@
     </script>
 </body>
 </html>
+
 
