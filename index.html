@@ -132,6 +132,16 @@
             }
         }
 
+        function drawChart(dataArray) {
+            var data = google.visualization.arrayToDataTable(dataArray);
+            var options = {
+                seriesType: 'scatter',
+                series: {1: {type: 'line'}}
+            };
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
         function drawTrendChart(dataArray) {
             const data = google.visualization.arrayToDataTable([['X', 'Y'], ...dataArray]);
             const options = {
