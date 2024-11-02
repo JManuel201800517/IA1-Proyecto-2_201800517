@@ -136,9 +136,20 @@ function predictPolynomial() {
     }
 }
 
+function joinArrays() {
+            var a = []
+            if (arguments.length == 10) {
+                a.push([arguments[0], arguments[2], arguments[4], arguments[6], arguments[8]]);
+                for (var i = 0; i < arguments[1].length; i++) {
+                    a.push([arguments[1][i], arguments[3][i], arguments[5][i], arguments[7][i], arguments[9][i]]);
+                }
+            }
+            return a;
+        }
+
 function showPolynomialGraph() {
     if (yPredictDegree2.length > 0 || yPredictDegree3.length > 0 || yPredictDegree4.length > 0) {
-        const dataArray = joinArrays(
+        var dataArray = joinArrays(
             'x', xTrain,
             'Y Train', yTrain,
             'Predicción Grado 2', yPredictDegree2,
