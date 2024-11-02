@@ -137,11 +137,7 @@ function predictPolynomial() {
 }
 
 function showPolynomialGraph() {
-    // Asegúrate de que todas las predicciones tengan longitud adecuada
-    if (yPredictDegree2.length === xTrain.length && 
-        yPredictDegree3.length === xTrain.length && 
-        yPredictDegree4.length === xTrain.length) {
-        
+    if (yPredictDegree2.length > 0 || yPredictDegree3.length > 0 || yPredictDegree4.length > 0) {
         const dataArray = joinArrays(
             'x', xTrain,
             'Y Train', yTrain,
@@ -151,9 +147,21 @@ function showPolynomialGraph() {
         );
 
         google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(() => drawChart2(dataArray));
+        google.charts.setOnLoadCallback(() => {
+            var data = google.visualization.arrayToDataTable(dataArray);
+            var options = {
+                seriesType: 'scatter',
+                series: {
+                    1: { type: 'line' },
+                    2: { type: 'line' },
+                    3: { type: 'line' }
+                }
+            };
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        });
     } else {
-        alert('Error: Los datos no tienen la misma longitud. Verifica que el modelo se haya entrenado y predicho correctamente.');
+        alert('Primero realiza una predicción polinomial para mostrar la gráfica.');
     }
 }
 
