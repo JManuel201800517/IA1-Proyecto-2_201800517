@@ -233,8 +233,8 @@ function showPolynomialGraph() {
             chart.draw(data, options);
         }
 
-        function drawChart2() {
-            var data = google.visualization.arrayToDataTable(a);
+        function drawChart2(dataArray) {
+            var data = google.visualization.arrayToDataTable(dataArray);
             var options = {
                 seriesType: 'scatter',
                 series: {
