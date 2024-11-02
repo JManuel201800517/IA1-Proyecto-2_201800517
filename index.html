@@ -153,6 +153,7 @@ function trainModel() {
         document.getElementById("log").innerHTML += '<br>R^2 Grado 3: ' + Number(r3.toFixed(2));
         document.getElementById("log").innerHTML += '<br>R^2 Grado 4: ' + Number(r4.toFixed(2));
     } else if (model === 'redesNeuronales') {
+        loadCSV();
         trainNeuralNetworks();
         
     } else {
