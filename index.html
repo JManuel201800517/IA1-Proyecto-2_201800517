@@ -18,7 +18,7 @@
             <option value="seleccionar">Seleccionar</option>
             <option value="regresionLineal">Regresión Lineal</option>
             <option value="regresionLogistica">Regresión Logistica</option>
-            <option value="arbolDecision">Regresión Polinomial</option>
+            <option value="regresionPolinomial">Regresión Polinomial</option>
             <option value="NaiveBayes">Naive Bayes</option>
             <option value="redesNeuronales">Redes Neuronales</option>
             <option value="kmeans">K-means</option>
@@ -41,16 +41,18 @@
         let yTrain = [];
         let yPredict = [];
         let linear;
-
+        let polynomial;
+        const gradoPolinomial = 3;
+    
         function loadCSV() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-
+            
             if (!file) {
                 alert('Por favor, selecciona un archivo CSV.');
                 return;
             }
-
+    
             const reader = new FileReader();
             reader.onload = function(event) {
                 const csvData = event.target.result;
@@ -58,12 +60,12 @@
             };
             reader.readAsText(file);
         }
-
+    
         function processCSV(data) {
             const lines = data.split('\n');
             xTrain = [];
             yTrain = [];
-
+            
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].split(',');
                 if (line.length === 2) { 
@@ -73,28 +75,48 @@
             }
             document.getElementById("log").innerHTML += '<br>Datos cargados exitosamente.';
         }
-
+    
         function trainModel() {
             document.getElementById("log").innerHTML = "";
             const model = document.getElementById('modelSelect').value;
-
+    
             if (model === 'regresionLineal') {
                 loadCSV();
                 linear = new LinearRegression();
                 linear.fit(xTrain, yTrain);
                 document.getElementById("log").innerHTML += '<br>Modelo de Regresión Lineal entrenado.<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain;
+            } else if (model === 'regresionPolinomial') {
+                loadCSV();
+                trainPolynomialRegression();
             } else {
                 alert('Por favor, selecciona un modelo válido para entrenar.');
             }
         }
-
+    
+        function trainPolynomialRegression() {
+            // Lógica para entrenar el modelo de regresión polinomial
+            polynomial = new PolynomialRegression(gradoPolinomial);
+            polynomial.fit(xTrain, yTrain);
+            document.getElementById("log").innerHTML += '<br>Modelo de Regresión Polinomial entrenado con grado ' + gradoPolinomial + '.';
+        }
+    
         function predictModel() {
-            if (linear) {
+            const model = document.getElementById('modelSelect').value;
+    
+            if (model === 'regresionLineal' && linear) {
                 yPredict = linear.predict(xTrain);
                 document.getElementById("log").innerHTML += '<br>Predicción realizada.<br>Y Predict: ' + yPredict;
+            } else if (model === 'regresionPolinomial' && polynomial) {
+                predictPolynomialRegression();
             } else {
                 alert('Primero entrena el modelo antes de predecir.');
             }
+        }
+    
+        function predictPolynomialRegression() {
+            // Lógica para realizar la predicción con el modelo de regresión polinomial
+            yPredict = polynomial.predict(xTrain);
+            document.getElementById("log").innerHTML += '<br>Predicción realizada para la Regresión Polinomial.<br>Y Predict: ' + yPredict;
         }
 
         function showGraph() {
