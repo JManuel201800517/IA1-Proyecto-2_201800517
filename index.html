@@ -48,6 +48,7 @@ let yPredictDegree4 = [];
 let r2, r3, r4;
 
 function trainNeuralNetworks() {
+        loadCSV();
         if (xTrain.length === 0 || yTrain.length === 0) {
             alert('Por favor, carga un archivo CSV antes de entrenar las redes neuronales.');
             return;
@@ -153,7 +154,6 @@ function trainModel() {
         document.getElementById("log").innerHTML += '<br>R^2 Grado 3: ' + Number(r3.toFixed(2));
         document.getElementById("log").innerHTML += '<br>R^2 Grado 4: ' + Number(r4.toFixed(2));
     } else if (model === 'redesNeuronales') {
-        loadCSV();
         trainNeuralNetworks();
         
     } else {
