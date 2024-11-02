@@ -150,23 +150,34 @@ function showPolynomialGraph() {
 
 
         function predictModel() {
-            if (linear) {
-                yPredict = linear.predict(xTrain);
-                document.getElementById("log").innerHTML += '<br>Predicción realizada.<br>Y Predict: ' + yPredict;
+            if(model === 'regresionPolinomial'){
+                predictPolynomial();
             } else {
-                alert('Primero entrena el modelo antes de predecir.');
+                if (linear) {
+                   yPredict = linear.predict(xTrain);
+                   document.getElementById("log").innerHTML += '<br>Predicción realizada.<br>Y Predict: ' + yPredict;
+                } else {
+                   alert('Primero entrena el modelo antes de predecir.');
+                }
+
             }
+
         }
 
         function showGraph() {
-            if (yPredict.length > 0) {
-                const dataArray = joinArrays('x', xTrain, 'yTrain', yTrain, 'yPredict', yPredict);
-
-                google.charts.load('current', {'packages': ['corechart']});
-                google.charts.setOnLoadCallback(() => drawChart(dataArray));
+            if(model === 'regresionPolinomial'){
+                showPolynomialGraph();
             } else {
-                alert('Primero realiza una predicción para mostrar la gráfica.');
+                if (yPredict.length > 0) {
+                    const dataArray = joinArrays('x', xTrain, 'yTrain', yTrain, 'yPredict', yPredict);
+
+                    google.charts.load('current', {'packages': ['corechart']});
+                    google.charts.setOnLoadCallback(() => drawChart(dataArray));
+                } else {
+                    alert('Primero realiza una predicción para mostrar la gráfica.');
+                }
             }
+            
         }
 
         function showTrend() {
