@@ -72,7 +72,7 @@ button:hover {
 
 /* Estilo del área de gráficos */
 #chart_div {
-  width: 900%;
+  width: 100%;
   height: 500px;
   margin-top: 20px;
 }

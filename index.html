@@ -137,15 +137,28 @@ function predictPolynomial() {
 }
 
 function joinArrays() {
-            var a = []
-            if (arguments.length == 10) {
-                a.push([arguments[0], arguments[2], arguments[4], arguments[6], arguments[8]]);
-                for (var i = 0; i < arguments[1].length; i++) {
-                    a.push([arguments[1][i], arguments[3][i], arguments[5][i], arguments[7][i], arguments[9][i]]);
-                }
-            }
-            return a;
+    var a = [];
+    if (arguments.length > 0) {
+        // Agrega los encabezados
+        var headers = [];
+        for (var i = 0; i < arguments.length; i += 2) {
+            headers.push(arguments[i]); // Tomar los nombres de las series
         }
+        a.push(headers);
+
+        // Asumiendo que todas las series tienen la misma longitud
+        var maxLength = arguments[1].length; // Longitud de la primera serie
+        for (var i = 0; i < maxLength; i++) {
+            var row = [];
+            for (var j = 1; j < arguments.length; j += 2) {
+                row.push(arguments[j][i]); // Agregar los valores de cada serie
+            }
+            a.push(row);
+        }
+    }
+    return a;
+}
+
 
 function showPolynomialGraph() {
     if (yPredictDegree2.length > 0 || yPredictDegree3.length > 0 || yPredictDegree4.length > 0) {
