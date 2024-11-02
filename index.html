@@ -92,26 +92,25 @@ function trainModel() {
         loadCSV();
         polynomial = new PolynomialRegression();
 
-        // Entrenamiento y predicción para grado 2
+        // Entrenamiento y predicción para grados 2, 3 y 4
         polynomial.fit(xTrain, yTrain, 2);
         yPredictDegree2 = polynomial.predict(xTrain);
         r2 = polynomial.getError();
 
-        // Entrenamiento y predicción para grado 3
         polynomial.fit(xTrain, yTrain, 3);
         yPredictDegree3 = polynomial.predict(xTrain);
         r3 = polynomial.getError();
 
-        // Entrenamiento y predicción para grado 4
         polynomial.fit(xTrain, yTrain, 4);
         yPredictDegree4 = polynomial.predict(xTrain);
         r4 = polynomial.getError();
 
-        for (let i = 0; i < yPredictDegree2.length; i++) {
-            yPredictDegree2[i] = Number(yPredictDegree2[i].toFixed(2));
-            yPredictDegree3[i] = Number(yPredictDegree3[i].toFixed(2));
-            yPredictDegree4[i] = Number(yPredictDegree4[i].toFixed(2));
-        }
+        // Redondear valores
+        [yPredictDegree2, yPredictDegree3, yPredictDegree4].forEach(arr => {
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = Number(arr[i].toFixed(2));
+            }
+        });
 
         document.getElementById("log").innerHTML += '<br>Modelo de Regresión Polinomial entrenado.<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain;
         document.getElementById("log").innerHTML += '<br>Y Predicción Grado 2: ' + yPredictDegree2;
@@ -138,7 +137,11 @@ function predictPolynomial() {
 }
 
 function showPolynomialGraph() {
-    if (yPredictDegree2.length > 0 || yPredictDegree3.length > 0 || yPredictDegree4.length > 0) {
+    // Asegúrate de que todas las predicciones tengan longitud adecuada
+    if (yPredictDegree2.length === xTrain.length && 
+        yPredictDegree3.length === xTrain.length && 
+        yPredictDegree4.length === xTrain.length) {
+        
         const dataArray = joinArrays(
             'x', xTrain,
             'Y Train', yTrain,
@@ -150,7 +153,7 @@ function showPolynomialGraph() {
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(() => drawChart2(dataArray));
     } else {
-        alert('Primero realiza una predicción polinomial para mostrar la gráfica.');
+        alert('Error: Los datos no tienen la misma longitud. Verifica que el modelo se haya entrenado y predicho correctamente.');
     }
 }
 
