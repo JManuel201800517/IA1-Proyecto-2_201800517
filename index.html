@@ -150,6 +150,7 @@ function showPolynomialGraph() {
 
 
         function predictModel() {
+            const model = document.getElementById('modelSelect').value;
             if(model === 'regresionPolinomial'){
                 predictPolynomial();
             } else {
@@ -165,6 +166,7 @@ function showPolynomialGraph() {
         }
 
         function showGraph() {
+            const model = document.getElementById('modelSelect').value;
             if(model === 'regresionPolinomial'){
                 showPolynomialGraph();
             } else {
