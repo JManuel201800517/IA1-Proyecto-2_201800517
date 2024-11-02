@@ -38,85 +38,124 @@
 
     <script type="text/javascript">
         let xTrain = [];
-        let yTrain = [];
-        let yPredict = [];
-        let linear;
-        let polynomial;
-        const gradoPolinomial = 3;
-    
-        function loadCSV() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                alert('Por favor, selecciona un archivo CSV.');
-                return;
-            }
-    
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const csvData = event.target.result;
-                processCSV(csvData);
-            };
-            reader.readAsText(file);
+let yTrain = [];
+let yPredict = [];
+let linear;
+let polynomial;  // Nueva variable para el modelo de regresión polinomial
+let yPredictDegree2 = [];
+let yPredictDegree3 = [];
+let yPredictDegree4 = [];
+let r2, r3, r4;
+
+function loadCSV() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Por favor, selecciona un archivo CSV.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const csvData = event.target.result;
+        processCSV(csvData);
+    };
+    reader.readAsText(file);
+}
+
+function processCSV(data) {
+    const lines = data.split('\n');
+    xTrain = [];
+    yTrain = [];
+
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].split(',');
+        if (line.length === 2) { 
+            xTrain.push(parseFloat(line[0]));
+            yTrain.push(parseFloat(line[1]));
         }
-    
-        function processCSV(data) {
-            const lines = data.split('\n');
-            xTrain = [];
-            yTrain = [];
-            
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].split(',');
-                if (line.length === 2) { 
-                    xTrain.push(parseFloat(line[0]));
-                    yTrain.push(parseFloat(line[1]));
-                }
-            }
-            document.getElementById("log").innerHTML += '<br>Datos cargados exitosamente.';
+    }
+    document.getElementById("log").innerHTML += '<br>Datos cargados exitosamente.';
+}
+
+function trainModel() {
+    document.getElementById("log").innerHTML = "";
+    const model = document.getElementById('modelSelect').value;
+
+    if (model === 'regresionLineal') {
+        loadCSV();
+        linear = new LinearRegression();
+        linear.fit(xTrain, yTrain);
+        document.getElementById("log").innerHTML += '<br>Modelo de Regresión Lineal entrenado.<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain;
+    } else if (model === 'regresionPolinomial') {
+        loadCSV();
+        polynomial = new PolynomialRegression();
+
+        // Entrenamiento y predicción para grado 2
+        polynomial.fit(xTrain, yTrain, 2);
+        yPredictDegree2 = polynomial.predict(xTrain);
+        r2 = polynomial.getError();
+
+        // Entrenamiento y predicción para grado 3
+        polynomial.fit(xTrain, yTrain, 3);
+        yPredictDegree3 = polynomial.predict(xTrain);
+        r3 = polynomial.getError();
+
+        // Entrenamiento y predicción para grado 4
+        polynomial.fit(xTrain, yTrain, 4);
+        yPredictDegree4 = polynomial.predict(xTrain);
+        r4 = polynomial.getError();
+
+        for (let i = 0; i < yPredictDegree2.length; i++) {
+            yPredictDegree2[i] = Number(yPredictDegree2[i].toFixed(2));
+            yPredictDegree3[i] = Number(yPredictDegree3[i].toFixed(2));
+            yPredictDegree4[i] = Number(yPredictDegree4[i].toFixed(2));
         }
-    
-        function trainModel() {
-            document.getElementById("log").innerHTML = "";
-            const model = document.getElementById('modelSelect').value;
-    
-            if (model === 'regresionLineal') {
-                loadCSV();
-                linear = new LinearRegression();
-                linear.fit(xTrain, yTrain);
-                document.getElementById("log").innerHTML += '<br>Modelo de Regresión Lineal entrenado.<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain;
-            } else if (model === 'regresionPolinomial') {
-                loadCSV();
-                trainPolynomialRegression();
-            } else {
-                alert('Por favor, selecciona un modelo válido para entrenar.');
-            }
-        }
-    
-        function trainPolynomialRegression() {
-            // Lógica para entrenar el modelo de regresión polinomial
-            polynomial = new PolynomialRegression(gradoPolinomial);
-            polynomial.fit(xTrain, yTrain);
-            document.getElementById("log").innerHTML += '<br>Modelo de Regresión Polinomial entrenado con grado ' + gradoPolinomial + '.';
-        }
-    
+
+        document.getElementById("log").innerHTML += '<br>Modelo de Regresión Polinomial entrenado.<br>X Train: ' + xTrain + '<br>Y Train: ' + yTrain;
+        document.getElementById("log").innerHTML += '<br>Y Predicción Grado 2: ' + yPredictDegree2;
+        document.getElementById("log").innerHTML += '<br>Y Predicción Grado 3: ' + yPredictDegree3;
+        document.getElementById("log").innerHTML += '<br>Y Predicción Grado 4: ' + yPredictDegree4;
+        document.getElementById("log").innerHTML += '<br>R^2 Grado 2: ' + Number(r2.toFixed(2));
+        document.getElementById("log").innerHTML += '<br>R^2 Grado 3: ' + Number(r3.toFixed(2));
+        document.getElementById("log").innerHTML += '<br>R^2 Grado 4: ' + Number(r4.toFixed(2));
+    } else {
+        alert('Por favor, selecciona un modelo válido para entrenar.');
+    }
+}
+
+function predictPolynomial() {
+    if (polynomial) {
+        const predictArray = xTrain;
+        yPredictDegree2 = polynomial.predict(predictArray);
+        yPredictDegree3 = polynomial.predict(predictArray);
+        yPredictDegree4 = polynomial.predict(predictArray);
+        document.getElementById("log").innerHTML += '<br>Predicción Polinomial realizada.';
+    } else {
+        alert('Primero entrena el modelo de regresión polinomial antes de predecir.');
+    }
+}
+
+function showPolynomialGraph() {
+    if (yPredictDegree2.length > 0 || yPredictDegree3.length > 0 || yPredictDegree4.length > 0) {
+        const dataArray = joinArrays('x', xTrain, 'Y Train', yTrain, 'Predicción Grado 2', yPredictDegree2, 'Predicción Grado 3', yPredictDegree3, 'Predicción Grado 4', yPredictDegree4);
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(() => drawChart(dataArray));
+    } else {
+        alert('Primero realiza una predicción polinomial para mostrar la gráfica.');
+    }
+}
+
+
         function predictModel() {
-            const model = document.getElementById('modelSelect').value;
-    
-            if (model === 'regresionLineal' && linear) {
+            if (linear) {
                 yPredict = linear.predict(xTrain);
                 document.getElementById("log").innerHTML += '<br>Predicción realizada.<br>Y Predict: ' + yPredict;
-            } else if (model === 'regresionPolinomial' && polynomial) {
-                predictPolynomialRegression();
             } else {
                 alert('Primero entrena el modelo antes de predecir.');
             }
-        }
-    
-        function predictPolynomialRegression() {
-            // Lógica para realizar la predicción con el modelo de regresión polinomial
-            yPredict = polynomial.predict(xTrain);
-            document.getElementById("log").innerHTML += '<br>Predicción realizada para la Regresión Polinomial.<br>Y Predict: ' + yPredict;
         }
 
         function showGraph() {
@@ -206,5 +245,4 @@
     </script>
 </body>
 </html>
-
 
