@@ -139,7 +139,13 @@ function predictPolynomial() {
 
 function showPolynomialGraph() {
     if (yPredictDegree2.length > 0 || yPredictDegree3.length > 0 || yPredictDegree4.length > 0) {
-        const dataArray = joinArrays('x', xTrain, 'Y Train', yTrain, 'Predicción Grado 2', yPredictDegree2, 'Predicción Grado 3', yPredictDegree3, 'Predicción Grado 4', yPredictDegree4);
+        const dataArray = joinArrays(
+            'x', xTrain,
+            'Y Train', yTrain,
+            'Predicción Grado 2', yPredictDegree2,
+            'Predicción Grado 3', yPredictDegree3,
+            'Predicción Grado 4', yPredictDegree4
+        );
 
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(() => drawChart2(dataArray));
